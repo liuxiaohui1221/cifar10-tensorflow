@@ -27,5 +27,3 @@ train_generator = train_datagen.flow_from_directory(
  class_mode="categorical",
  target_size=IMAGE_SIZE,
  batch_size=BATCH_SIZE)
-
-train_datagen.
