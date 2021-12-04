@@ -69,7 +69,7 @@ def img_gen(img_path, img_name, out_img_base):
 
 	##图像转换
 	for i in range(6):
-		image_new = distort_color(image_decode_jpeg,color_ordering=i,direction=random.randint(0,2))
+		image_new = distort_color(image_decode_jpeg,color_ordering=i,direction=random.randint(0,3))
 		image_new_path = os.path.join(out_img_base, str(i)+"_"+img_name)
 		#print(image_new_path)
 		hd = tf.io.gfile.GFile(image_new_path, "w")
@@ -96,6 +96,7 @@ for path in class_path:
 		#print(os.path.join(classPath,fileName))
 		#img_path.append(os.path.join(classPath,fileName))
 		img_gen(os.path.join(classPath,fileName), fileName, outClassPath)
+		pass
 	print("End class:",classPath)
 print("End all!")
 
