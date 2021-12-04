@@ -27,7 +27,7 @@ class Dataset:
 class RNN:
     
     def construct_model(self, batch_size):
-        # input variable
+        # data variable
         self.flower = tf.placeholder(dtype=tf.float32, shape=[batch_size, 3], name='flower')
         self.label = tf.placeholder(dtype=tf.int32, shape=[batch_size], name='label')
         flower_series = tf.unstack(self.flower, num=3, axis=1, name='flower_series')

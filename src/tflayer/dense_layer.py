@@ -34,11 +34,11 @@ class DenseLayer:
             raise('ERROR: prev_layer or input_shape cannot be None!')
         
         with tf.name_scope('%s_def' % (self.name)) as scope:
-            weight_initializer = tf.variance_scaling_initializer(
-                scale=2.0, mode='fan_in', distribution='normal', dtype=tf.float32)
-            bias_initializer = tf.zeros_initializer(dtype=tf.float32)
+            weight_initializer = tf.keras.initializers.VarianceScaling(
+                scale=2.0, mode='fan_in', distribution='normal')
+            bias_initializer = tf.zeros_initializer()
             
-            self.dense = tf.layers.Dense(
+            self.dense = tf.keras.layers.Dense(
                 units=self.hidden_dim,
                 activation=None,
                 use_bias=not self.batch_normal,
@@ -48,12 +48,12 @@ class DenseLayer:
                 name='%s_dense' % (self.name))
             
             if self.batch_normal:
-                beta_initializer = tf.zeros_initializer(dtype=tf.float32)
-                gamma_initializer = tf.ones_initializer(dtype=tf.float32)
-                moving_mean_initializer = tf.zeros_initializer(dtype=tf.float32)
-                moving_variance_initializer = tf.ones_initializer(dtype=tf.float32)
+                beta_initializer = tf.zeros_initializer()
+                gamma_initializer = tf.ones_initializer()
+                moving_mean_initializer = tf.zeros_initializer()
+                moving_variance_initializer = tf.ones_initializer()
                 
-                self.bn = tf.layers.BatchNormalization(
+                self.bn = tf.keras.layers.BatchNormalization(
                     axis=-1,
                     momentum=0.9,
                     epsilon=1e-3,

@@ -43,11 +43,11 @@ class ConvLayer:
         with tf.name_scope('%s_def' % (self.name)) as scope:
             # 权重矩阵
             numpy.random.seed(0)
-            weight_initializer = tf.variance_scaling_initializer(
-                scale=2.0, mode='fan_in', distribution='normal', dtype=tf.float32)
-            bias_initializer = tf.zeros_initializer(dtype=tf.float32)
+            weight_initializer = tf.keras.initializers.VarianceScaling(
+                scale=2.0, mode='fan_in', distribution='normal')
+            bias_initializer = tf.zeros_initializer()
             
-            self.conv = tf.layers.Conv2D(
+            self.conv = tf.keras.layers.Conv2D(
                 filters=self.n_filter,
                 kernel_size=[self.y_size, self.x_size],
                 strides=[self.y_stride, self.x_stride],
@@ -61,12 +61,12 @@ class ConvLayer:
                 name='%s_conv' % (self.name))
             
             if self.batch_normal:
-                beta_initializer = tf.zeros_initializer(dtype=tf.float32)
-                gamma_initializer = tf.ones_initializer(dtype=tf.float32)
-                moving_mean_initializer = tf.zeros_initializer(dtype=tf.float32)
-                moving_variance_initializer = tf.ones_initializer(dtype=tf.float32)
+                beta_initializer = tf.zeros_initializer()
+                gamma_initializer = tf.ones_initializer()
+                moving_mean_initializer = tf.zeros_initializer()
+                moving_variance_initializer = tf.ones_initializer()
                 
-                self.bn = tf.layers.BatchNormalization(
+                self.bn = tf.keras.layers.BatchNormalization(
                     axis=-1 if self.data_format == 'channels_last' else 1,
                     momentum=0.9,
                     epsilon=1e-3,

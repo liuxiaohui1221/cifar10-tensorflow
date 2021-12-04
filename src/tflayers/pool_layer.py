@@ -3,7 +3,7 @@
 # time: 20180828
 # intro: pooling layer based on tensorflow.layers
 import numpy
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 class PoolLayer:

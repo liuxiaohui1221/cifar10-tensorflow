@@ -35,12 +35,12 @@ class BatchNormLayer:
     
         with tf.name_scope('%s_def' % (self.name)) as scope:
             # 权重矩阵
-            beta_initializer = tf.zeros_initializer(dtype=tf.float32)
-            gamma_initializer = tf.ones_initializer(dtype=tf.float32)
-            moving_mean_initializer = tf.zeros_initializer(dtype=tf.float32)
-            moving_variance_initializer = tf.ones_initializer(dtype=tf.float32)
+            beta_initializer = tf.zeros_initializer()
+            gamma_initializer = tf.ones_initializer()
+            moving_mean_initializer = tf.zeros_initializer()
+            moving_variance_initializer = tf.ones_initializer()
             
-            self.bn = tf.layers.BatchNormalization(
+            self.bn = tf.keras.layers.BatchNormalization(
                 axis=-1 if self.data_format == 'channels_last' else 1,
                 momentum=0.9,
                 epsilon=1e-3,
