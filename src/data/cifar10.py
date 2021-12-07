@@ -9,7 +9,7 @@ import cv2
 class Corpus:
     
     def __init__(self):
-        self.load_cifar10('C:/workspace/cifar10-tensorflow/src/data/CIFAR10_data')
+        self.load_cifar10('src/data/CIFAR10_data')
         self._split_train_valid(valid_rate=0.9)
         self.n_train = self.train_images.shape[0]
         self.n_valid = self.valid_images.shape[0]

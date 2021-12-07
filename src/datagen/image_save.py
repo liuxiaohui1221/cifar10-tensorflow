@@ -68,7 +68,7 @@ def img_gen(img_path, img_name, out_img_base):
 	image_decode_jpeg = tf.image.convert_image_dtype(image_decode_jpeg, dtype=tf.float32)
 
 	##图像转换
-	for i in range(6):
+	for i in range(1):
 		image_new = distort_color(image_decode_jpeg,color_ordering=i,direction=random.randint(0,3))
 		image_new_path = os.path.join(out_img_base, str(i)+"_"+img_name)
 		#print(image_new_path)
@@ -77,7 +77,7 @@ def img_gen(img_path, img_name, out_img_base):
 		hd.close()
 	#print("test end!")
 
-
+##test
 img_gen("C:/Downloads/test/1.JPG", "1.JPG", "C:/Downloads/test")
 
 # 如果目录名字为中文 需要转码处理

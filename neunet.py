@@ -33,7 +33,8 @@ def resnet():
     from src.model.resnet import ConvNet
     convnet = ConvNet(n_channel=3, n_classes=10, image_size=24, network_path='src/config/networks/resnet.yaml')
     convnet.train(dataloader=cifar10, backup_path='backups/cifar10-v5/', batch_size=128, n_epoch=500)
-    # convnet.test(backup_path='backups/cifar10-v4/', epoch=0, batch_size=128)
+    convnet.test(backup_path='backups/cifar10-v4/', epoch=0, batch_size=128)
 
 
-vgg_cnn()
+#vgg_cnn()
+resnet()
