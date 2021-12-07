@@ -4,7 +4,7 @@
 # intro: convolutional layer based on tensorflow.layers
 import numpy
 import math
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import random
 
 

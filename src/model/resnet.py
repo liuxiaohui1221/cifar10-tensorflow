@@ -254,7 +254,7 @@ class ConvNet():
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
         sess = tf.Session()
         # 读取模型
-        model_path = 'backup/cifar10/model_%d.ckpt' % (epoch)
+        model_path = 'backups/cifar10/model_%d.ckpt' % (epoch)
         assert(os.path.exists(model_path+'.index'))
         saver.restore(sess, model_path)
         print('read model from %s' % (model_path))
@@ -289,7 +289,7 @@ class ConvNet():
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
         sess = tf.Session()
         # 读取模型
-        model_path = 'backup/cifar10/model_%d.ckpt' % (epoch)
+        model_path = 'backups/cifar10/model_%d.ckpt' % (epoch)
         if os.path.exists(model_path+'.index'):
             saver.restore(sess, model_path)
             print('read model from %s' % (model_path))

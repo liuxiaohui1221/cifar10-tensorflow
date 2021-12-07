@@ -9,7 +9,7 @@ import cv2
 class Corpus:
     
     def __init__(self):
-        self.load_cifar10('data/CIFAR10_data')
+        self.load_cifar10('C:/workspace/cifar10-tensorflow/src/data/CIFAR10_data')
         self._split_train_valid(valid_rate=0.9)
         self.n_train = self.train_images.shape[0]
         self.n_valid = self.valid_images.shape[0]
@@ -131,9 +131,9 @@ class Corpus:
         for i in range(images.shape[0]):
             old_image = images[i,:,:,:]
             new_image = old_image
-            for i in range(image.shape[0]):
-                for j in range(image.shape[1]):
-                    for k in range(image.shape[2]):
+            for i in range(old_image.shape[0]):
+                for j in range(old_image.shape[1]):
+                    for k in range(old_image.shape[2]):
                         new_image[i, j, k] += random.gauss(mean, std)
             images[i,:,:,:] = new_image
         

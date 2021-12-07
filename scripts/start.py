@@ -7,6 +7,9 @@ import sys
 import os
 import argparse
 import yaml
+import tensorflow as tf
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 
@@ -17,9 +20,9 @@ class Starter:
         from src.dataloader.cifar10 import Dataloader
         from src.network.resnet import Network
         from src.manager.resnet import Manager
-            
+
         # 读取配置
-        config_path = os.path.join('src/config/options/resnet.yaml')
+        config_path = os.path.join('C:/workspace/cifar10-tensorflow/src/config/options/resnet.yaml')
         self.option = yaml.load(open(config_path, 'r'))
         
         # 实例化data模块

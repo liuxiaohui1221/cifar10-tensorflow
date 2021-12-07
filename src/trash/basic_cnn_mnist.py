@@ -94,9 +94,9 @@ class ConvNet:
         sess.run(tf.global_variables_initializer())
         for epoch in range(1, epochs+1):
             # 保存模型
-            # saver_path = saver.save(sess, '../backup/mnist/model.ckpt')
+            # saver_path = saver.save(sess, '../backups/mnist/model.ckpt')
             if epoch <= 50 or epoch % 20 == 0:
-                saver_path = saver.save(sess, '../backup/mnist/model_%d.ckpt' % (epoch))
+                saver_path = saver.save(sess, '../backups/mnist/model_%d.ckpt' % (epoch))
             # 在训练之前，在验证集上计算准确率
             precision = []
             for batch in range(int(mnist.validation.num_examples / batch_size)):
@@ -120,7 +120,7 @@ class ConvNet:
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
         sess = tf.Session()
         # 读取模型
-        model_path = '../backup/mnist/model_18.ckpt'
+        model_path = '../backups/mnist/model_18.ckpt'
         assert(os.path.exists(model_path+'.index'))
         saver.restore(sess, model_path)
         print('read model from %s' % (model_path))
@@ -139,7 +139,7 @@ class ConvNet:
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
         sess = tf.Session()
         # 读取模型
-        model_path = '../backup/mnist/model_%d.ckpt' % (epoch)
+        model_path = '../backups/mnist/model_%d.ckpt' % (epoch)
         assert(os.path.exists(model_path+'.index'))
         saver.restore(sess, model_path)
         print('read model from %s' % (model_path))

@@ -7,8 +7,8 @@ batch_size: 128
 valid_rate: 0.9
 update_function: "momentum"
 
-network_path: "src/config/networks/resnet56.yaml"
-data_path: "data/CIFAR10_data"
+network_path: "C:/workspace/cifar10-tensorflow/src/config/networks/resnet56.yaml"
+data_path: "C:/workspace/cifar10-tensorflow/src/data/CIFAR10_data"
 seq: "cifar10-v5"
 
 train_gpus: "0"

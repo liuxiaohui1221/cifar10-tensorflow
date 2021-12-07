@@ -7,11 +7,11 @@ import time
 import yaml
 import numpy
 import matplotlib.pyplot as plt
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from src.tflayers.conv_layer import ConvLayer
 from src.tflayers.pool_layer import PoolLayer
 from src.tflayers.dense_layer import DenseLayer
-
+tf.disable_eager_execution()
 class ConvNet():
     
     def __init__(self, network_path, n_channel=3, n_classes=10, image_size=24):
@@ -95,7 +95,7 @@ class ConvNet():
                                      lambda: tf.constant(0.0001),
                                      lambda: tf.constant(0.00001)))
         self.optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(
-            self.avg_loss, global_step=self.global_step)
+            self.avg_loss)
         
         # 观察值
         correct_prediction = tf.equal(self.labels, tf.argmax(logits, 1))
@@ -111,7 +111,7 @@ class ConvNet():
         
         # 模型保存器
         self.saver = tf.train.Saver(
-            var_list=tf.global_variables(), write_version=tf.train.SaverDef.V2, 
+            var_list=tf.global_variables(), write_version=tf.train.SaverDef.V2,
             max_to_keep=10)
         
         # 模型初始化
@@ -235,7 +235,7 @@ class ConvNet():
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
         sess = tf.Session()
         # 读取模型
-        model_path = 'backup/cifar10/model_%d.ckpt' % (epoch)
+        model_path = 'backups/cifar10/model_%d.ckpt' % (epoch)
         assert(os.path.exists(model_path+'.index'))
         saver.restore(sess, model_path)
         print('read model from %s' % (model_path))
@@ -270,7 +270,7 @@ class ConvNet():
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
         sess = tf.Session()
         # 读取模型
-        model_path = 'backup/cifar10/model_%d.ckpt' % (epoch)
+        model_path = 'backups/cifar10/model_%d.ckpt' % (epoch)
         if os.path.exists(model_path+'.index'):
             saver.restore(sess, model_path)
             print('read model from %s' % (model_path))
