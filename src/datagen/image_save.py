@@ -81,8 +81,8 @@ def img_gen(img_path, img_name, out_img_base):
 img_gen("C:/Downloads/test/1.JPG", "1.JPG", "C:/Downloads/test")
 
 # 如果目录名字为中文 需要转码处理
-dataBase = 'C:/Downloads/data/train'
-outBase = 'C:/Downloads/datagen/train'
+dataBase = 'C:/Downloads/plant/train'
+outBase = 'C:/Downloads/plantgen/train'
 class_path=[]
 img_path=[]
 for className in os.listdir(dataBase) :

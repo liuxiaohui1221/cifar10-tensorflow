@@ -10,11 +10,10 @@ import pandas as ps
 # 	return x, y
 
 
-def get_files(base_path,data_path,label_file):
+def get_files(file_path,class_fileName):
 	# two list to save train data and train label
 	class_train = []
 	# train_class is the train image direcotry
-	file_path=os.path.join(base_path,data_path)
 	for pic_name in os.listdir(file_path):
 		image_raw = tf.io.read_file(file_path + '/' + pic_name)
 		image = tf.image.decode_image(contents=image_raw, channels=3)
@@ -27,7 +26,7 @@ def get_files(base_path,data_path,label_file):
 		#print(np.array(image).shape)
 		image = image.astype(float)
 		class_train.append(image.tolist())
-	picName_label = np.array(ps.read_csv(os.path.join(base_path,label_file), sep=' '))
+	picName_label = np.array(ps.read_csv(class_fileName, sep=' '))
 	#print(picName_label)
 	# transpose temp to (n,2)
 	train_db = np.array([class_train, picName_label[:, 1]])

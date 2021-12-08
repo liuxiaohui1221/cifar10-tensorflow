@@ -10,7 +10,7 @@ tf.config.experimental.set_memory_growth(physical_devices[0], True)
 model_path='my_model.h5'
 #加载数据
 #(x_train,y_train),(x_test,y_test) = keras.datasets.cifar10.load_data()
-(x_train,y_train),(x_test,y_test) = local.get_files('C:/Downloads/cifar10/cleandata','clean','clean_label.txt')
+(x_train,y_train),(x_test,y_test) = local.get_files('C:/Downloads/cifar10/cleandata/clean','clean_label.txt')
 print(x_train.shape,x_test.shape)
 #计算类别数
 num_labels = len(np.unique(y_train))
