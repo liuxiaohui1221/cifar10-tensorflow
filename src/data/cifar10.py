@@ -1,6 +1,6 @@
 # -*- encoding: utf8 -*-
 import pickle
-import numpy
+import numpy as np
 import random
 import platform
 import cv2
@@ -31,13 +31,13 @@ class Corpus:
                 elif 'Linux' in platform.platform():
                     cifar10 = pickle.load(fo)
             for i in range(len(cifar10[b"labels"])):
-                image = numpy.reshape(cifar10[b"data"][i], (3, 32, 32))
-                image = numpy.transpose(image, (1, 2, 0))
+                image = np.reshape(cifar10[b"data"][i], (3, 32, 32))
+                image = np.transpose(image, (1, 2, 0))
                 image = image.astype(float)
                 images.append(image)
             labels += cifar10[b"labels"]
-        images = numpy.array(images, dtype='float')
-        labels = numpy.array(labels, dtype='int')
+        images = np.array(images, dtype='float')
+        labels = np.array(labels, dtype='int')
         self.train_images, self.train_labels = images, labels
         
         # 读取测试集
@@ -49,13 +49,13 @@ class Corpus:
                 elif 'Linux' in platform.platform():
                     cifar10 = pickle.load(fo)
             for i in range(len(cifar10[b"labels"])):
-                image = numpy.reshape(cifar10[b"data"][i], (3, 32, 32))
-                image = numpy.transpose(image, (1, 2, 0))
+                image = np.reshape(cifar10[b"data"][i], (3, 32, 32))
+                image = np.transpose(image, (1, 2, 0))
                 image = image.astype(float)
                 images.append(image)
             labels += cifar10[b"labels"]
-        images = numpy.array(images, dtype='float')
-        labels = numpy.array(labels, dtype='int')
+        images = np.array(images, dtype='float')
+        labels = np.array(labels, dtype='int')
         self.test_images, self.test_labels = images, labels
         
     def data_augmentation(self, images, mode='train', flip=False, 
@@ -84,32 +84,32 @@ class Corpus:
         new_images = []
         for i in range(images.shape[0]):
             old_image = images[i,:,:,:]
-            old_image = numpy.pad(old_image, [[4,4], [4,4], [0,0]], 'constant')
-            left = numpy.random.randint(old_image.shape[0] - shape[0] + 1)
-            top = numpy.random.randint(old_image.shape[1] - shape[1] + 1)
+            old_image = np.pad(old_image, [[4,4], [4,4], [0,0]], 'constant')
+            left = np.random.randint(old_image.shape[0] - shape[0] + 1)
+            top = np.random.randint(old_image.shape[1] - shape[1] + 1)
             new_image = old_image[left: left+shape[0], top: top+shape[1], :]
             new_images.append(new_image)
         
-        return numpy.array(new_images)
+        return np.array(new_images)
     
     def _image_crop_test(self, images, shape):
         # 图像切割
         new_images = []
         for i in range(images.shape[0]):
             old_image = images[i,:,:,:]
-            old_image = numpy.pad(old_image, [[4,4], [4,4], [0,0]], 'constant')
+            old_image = np.pad(old_image, [[4,4], [4,4], [0,0]], 'constant')
             left = int((old_image.shape[0] - shape[0]) / 2)
             top = int((old_image.shape[1] - shape[1]) / 2)
             new_image = old_image[left: left+shape[0], top: top+shape[1], :]
             new_images.append(new_image)
         
-        return numpy.array(new_images)
+        return np.array(new_images)
     
     def _image_flip(self, images):
         # 图像翻转
         for i in range(images.shape[0]):
             old_image = images[i,:,:,:]
-            if numpy.random.random() < 0.5:
+            if np.random.random() < 0.5:
                 new_image = cv2.flip(old_image, 1)
             else:
                 new_image = old_image
@@ -121,7 +121,7 @@ class Corpus:
         # 图像白化
         for i in range(images.shape[0]):
             old_image = images[i,:,:,:]
-            new_image = (old_image - numpy.mean(old_image)) / numpy.std(old_image)
+            new_image = (old_image - np.mean(old_image)) / np.std(old_image)
             images[i,:,:,:] = new_image
         
         return images

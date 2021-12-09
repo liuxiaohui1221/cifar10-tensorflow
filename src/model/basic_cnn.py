@@ -7,10 +7,11 @@ import time
 import yaml
 import numpy
 import matplotlib.pyplot as plt
-import tensorflow.compat.v1 as tf
+import tensorflow._api.v2.compat.v1 as tf
 from src.tflayers.conv_layer import ConvLayer
 from src.tflayers.pool_layer import PoolLayer
 from src.tflayers.dense_layer import DenseLayer
+
 tf.disable_eager_execution()
 class ConvNet():
     

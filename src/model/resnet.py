@@ -7,7 +7,9 @@ import time
 import yaml
 import numpy
 import matplotlib.pyplot as plt
-import tensorflow as tf
+import tensorflow._api.v2.compat.v1 as tf
+
+from neunet import cifar10
 from src.tflayers.conv_layer import ConvLayer
 from src.tflayers.pool_layer import PoolLayer
 from src.tflayers.dense_layer import DenseLayer

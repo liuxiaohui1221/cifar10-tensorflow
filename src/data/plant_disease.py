@@ -1,74 +1,114 @@
-# Install nightly package for some functionalities that aren't in alpha
-#!pip install tensorflow-gpu==2.0.0-beta1
-# Install TF Hub for TF2
-#!pip install 'tensorflow-hub == 0.5'
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-import tensorflow as tf
-import tensorflow_hub as hub
-import os
+import cv2 as cv2
+import src.data.datagenerator as dg
+import numpy as np
+import random
 
-from tensorflow.keras.layers import Dense, Flatten, Conv2D
-from tensorflow.keras import Model
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras import layers
+class Plant:
 
-#Load data
-zip_file=tf.keras.utils.get_file(origin='https://storage.googleapis.com/plantdata/PlantVillage.zip',
- fname='PlantVillage.zip', extract=True)
-#Create the training and validation directories
-data_dir = os.path.join(os.path.dirname(zip_file), 'PlantVillage')
-train_dir = os.path.join(data_dir, 'train')
-validation_dir = os.path.join(data_dir, 'validation')
+	def __init__(self):
+		self.load_plant_disease('C:\\Downloads\\plant\\train')
+		self._split_train_valid(valid_rate=0.9)
+		self.n_train = self.train_images.shape[0]
+		self.n_valid = self.valid_images.shape[0]
+		self.n_test = self.test_images.shape[0]
 
-#!wget https: // github.com / obeshor / Plant - Diseases - Detector / archive / master.zip
-#!unzip master.zip;
-import json
+	def _split_train_valid(self, valid_rate=0.9):
+		images, labels = self.train_images, self.train_labels
+		thresh = int(images.shape[0] * valid_rate)
+		self.train_images, self.train_labels = images[0:thresh, :, :, :], labels[0:thresh]
+		self.valid_images, self.valid_labels = images[thresh:, :, :, :], labels[thresh:]
 
-with open('backups/plant_disease/Plant-Diseases-Detector-master/categories.json', 'r') as f:
- cat_to_name = json.load(f)
- classes = list(cat_to_name.values())
+	def load_plant_disease(self, directory):
+		# 读取训练集
+		plantdata = dg.get_data(directory)
+		images, labels = plantdata.train.images, plantdata.train.cls
+		print('plant disease shapes: ', images,labels)
+		self.train_images, self.train_labels = images, labels
 
-print(classes)
+		# 读取测试集
+		images, labels = plantdata.valid.images, plantdata.valid.cls
+		images = np.array(images, dtype='float')
+		labels = np.array(labels, dtype='int')
+		self.test_images, self.test_labels = images, labels
 
+	def data_augmentation(self, images, mode='train', flip=False,
+						  crop=False, crop_shape=(24, 24, 3), whiten=False,
+						  noise=False, noise_mean=0, noise_std=0.01):
+		# 图像切割
+		if crop:
+			if mode == 'train':
+				images = self._image_crop(images, shape=crop_shape)
+			elif mode == 'test':
+				images = self._image_crop_test(images, shape=crop_shape)
+		# 图像翻转
+		if flip:
+			images = self._image_flip(images)
+		# 图像白化
+		if whiten:
+			images = self._image_whitening(images)
+		# 图像噪声
+		if noise:
+			images = self._image_noise(images, mean=noise_mean, std=noise_std)
 
-module_selection = ("inception_v3", 299, 2048) #@param ["(\"mobilenet_v2\", 224, 1280)", "(\"inception_v3\", 299, 2048)"] {type:"raw", allow-input: true}
-handle_base, pixels, FV_SIZE = module_selection
-MODULE_HANDLE ="https://tfhub.dev/google/tf2- preview/{}/feature_vector/2".format(handle_base)
-IMAGE_SIZE = (pixels, pixels)
-BATCH_SIZE = 64 #@param {type:"integer"}
+		return images
 
-# Inputs are suitably resized for the selected module.
-validation_datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
-validation_generator = validation_datagen.flow_from_directory(
- validation_dir,
- shuffle=False,
- seed=42,
- color_mode="rgb",
- class_mode="categorical",
- target_size=IMAGE_SIZE,
- batch_size=BATCH_SIZE)
-do_data_augmentation = True  # @param {type:"boolean"}
-if do_data_augmentation:
- train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-  rescale=1. / 255,
-  rotation_range=40,
-  horizontal_flip=True,
-  width_shift_range=0.2,
-  height_shift_range=0.2,
-  shear_range=0.2,
-  zoom_range=0.2,
-  fill_mode='nearest')
-else:
- train_datagen = validation_datagen
+	def _image_crop(self, images, shape):
+		# 图像切割
+		new_images = []
+		for i in range(images.shape[0]):
+			old_image = images[i, :, :, :]
+			old_image = np.pad(old_image, [[4, 4], [4, 4], [0, 0]], 'constant')
+			left = np.random.randint(old_image.shape[0] - shape[0] + 1)
+			top = np.random.randint(old_image.shape[1] - shape[1] + 1)
+			new_image = old_image[left: left + shape[0], top: top + shape[1], :]
+			new_images.append(new_image)
 
-train_generator = train_datagen.flow_from_directory(
- train_dir,
- subset="training",
- shuffle=True,
- seed=42,
- color_mode="rgb",
- class_mode="categorical",
- target_size=IMAGE_SIZE,
- batch_size=BATCH_SIZE)
+		return np.array(new_images)
+
+	def _image_crop_test(self, images, shape):
+		# 图像切割
+		new_images = []
+		for i in range(images.shape[0]):
+			old_image = images[i, :, :, :]
+			old_image = np.pad(old_image, [[4, 4], [4, 4], [0, 0]], 'constant')
+			left = int((old_image.shape[0] - shape[0]) / 2)
+			top = int((old_image.shape[1] - shape[1]) / 2)
+			new_image = old_image[left: left + shape[0], top: top + shape[1], :]
+			new_images.append(new_image)
+
+		return np.array(new_images)
+
+	def _image_flip(self, images):
+		# 图像翻转
+		for i in range(images.shape[0]):
+			old_image = images[i, :, :, :]
+			if np.random.random() < 0.5:
+				new_image = cv2.flip(old_image, 1)
+			else:
+				new_image = old_image
+			images[i, :, :, :] = new_image
+
+		return images
+
+	def _image_whitening(self, images):
+		# 图像白化
+		for i in range(images.shape[0]):
+			old_image = images[i, :, :, :]
+			new_image = (old_image - np.mean(old_image)) / np.std(old_image)
+			images[i, :, :, :] = new_image
+
+		return images
+
+	def _image_noise(self, images, mean=0, std=0.01):
+		# 图像噪声
+		for i in range(images.shape[0]):
+			old_image = images[i, :, :, :]
+			new_image = old_image
+			for i in range(old_image.shape[0]):
+				for j in range(old_image.shape[1]):
+					for k in range(old_image.shape[2]):
+						new_image[i, j, k] += random.gauss(mean, std)
+			images[i, :, :, :] = new_image
+
+		return images
