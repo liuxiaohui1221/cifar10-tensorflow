@@ -13,6 +13,7 @@ class Plant:
 		self.n_valid = self.valid_images.shape[0]
 		self.n_test = self.test_images.shape[0]
 
+
 	def _split_train_valid(self, valid_rate=0.9):
 		images, labels = self.train_images, self.train_labels
 		thresh = int(images.shape[0] * valid_rate)

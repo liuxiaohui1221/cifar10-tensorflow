@@ -120,7 +120,7 @@ class Manager():
                 train_accuracy += avg_accuracy * batch_images.shape[0]
                 
                 if i % (100 * self.option['batch_size']) == 0:
-                    print('epoch[%d], iter[%d], train loss: %.6f, train precision: %.6f\n' % (
+                    print('epoch[%d], iter[%d], train loss: %.6f, train precision: %.6f' % (
                         epoch, iteration, avg_loss, avg_accuracy))
             
             train_loss = 1.0 * train_loss / self.dataloader.n_train
@@ -149,10 +149,9 @@ class Manager():
             et = time.time()
             valid_span = et - st
             
-            print('epoch[%d], iter[%d], data time: %.2fs, train time: %.2fs, valid time: %.2fs' % (
-                epoch, iteration, data_span, train_span, valid_span))
+            #print('epoch[%d], iter[%d], data time: %.2fs, train time: %.2fs, valid time: %.2fs' % (  epoch, iteration, data_span, train_span, valid_span))
             print('epoch[%d], iter[%d], train loss: %.6f, train precision: %.6f, '
-                'valid loss: %.6f, valid precision: %.6f\n' % (
+                'valid loss: %.6f, valid precision: %.6f' % (
                 epoch, iteration, train_loss, train_accuracy, valid_loss, valid_accuracy))
             
             # 保存模型

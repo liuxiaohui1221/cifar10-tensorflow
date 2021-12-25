@@ -33,7 +33,7 @@ class ConvNet():
         self.network_option = yaml.load(open(network_option_path, 'r'))
         
         # 网络结构
-        print()
+        print("****** Resnet ******",network_option_path)
         self.conv_lists, self.dense_lists = [], []
         for layer_dict in self.network_option['net']['conv_first']:
             layer = ConvLayer(
@@ -70,7 +70,7 @@ class ConvNet():
             layer = DenseLayer(
                 hidden_dim=layer_dict['hidden_dim'], activation=layer_dict['activation'],
                 dropout=layer_dict['dropout'], keep_prob=self.keep_prob,
-                batch_normal=layer_dict['bn'], weight_decay=1e-4, 
+                batch_normal=layer_dict['bn'], weight_decay=1e-4,
                 name=layer_dict['name'], prev_layer=layer)
             self.dense_lists.append(layer)
         print()
@@ -144,11 +144,17 @@ class ConvNet():
             
             # 数据增强
             st = time.time()
-            train_images = dataloader.data_augmentation(dataloader.train_images, mode='train',
-                flip=True, crop=True, crop_shape=(24,24,3), whiten=True, noise=False)
+            # train_images = dataloader.data_augmentation(dataloader.train_images, mode='train',
+            #     flip=True, crop=True, crop_shape=(24,24,3), whiten=True, noise=False)
+            # train_labels = dataloader.train_labels
+            # valid_images = dataloader.data_augmentation(dataloader.valid_images, mode='test',
+            #     flip=False, crop=True, crop_shape=(24,24,3), whiten=True, noise=False)
+            # valid_labels = dataloader.valid_labels
+
+            ##图像切割
+            train_images = dataloader.data_augmentation(dataloader.train_images, mode='train', crop=True, crop_shape=(24,24,3))
             train_labels = dataloader.train_labels
-            valid_images = dataloader.data_augmentation(dataloader.valid_images, mode='test',
-                flip=False, crop=True, crop_shape=(24,24,3), whiten=True, noise=False)
+            valid_images = dataloader.data_augmentation(dataloader.valid_images, mode='test')
             valid_labels = dataloader.valid_labels
             et = time.time()
             data_span = et - st
@@ -199,10 +205,9 @@ class ConvNet():
             valid_accuracy = 1.0 * valid_accuracy / dataloader.n_valid
             valid_loss = 1.0 * valid_loss / dataloader.n_valid
             
-            print('epoch[%d], iter[%d], data time: %.2fs, train time: %.2fs' % (
-                epoch, iteration, data_span, train_span))
+            #print('epoch[%d], iter[%d], data time: %.2fs, train time: %.2fs' % ( epoch, iteration, data_span, train_span))
             print('epoch[%d], iter[%d], train loss: %.6f, train precision: %.6f, '
-                'valid loss: %.6f, valid precision: %.6f\n' % (
+                'valid loss: %.6f, valid precision: %.6f' % (
                 epoch, iteration, train_loss, train_accuracy, valid_loss, valid_accuracy))
             
             # 保存模型

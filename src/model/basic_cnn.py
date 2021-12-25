@@ -29,7 +29,7 @@ class ConvNet():
         network_option_path = os.path.join(network_path)
         self.network_option = yaml.load(open(network_option_path, 'r'))
         # 网络结构
-        print()
+        print("****** CNN ******", network_option_path)
         self.conv_lists, self.dense_lists = [], []
         for layer_dict in self.network_option['net']['conv_first']:
             layer = ConvLayer(
@@ -179,10 +179,9 @@ class ConvNet():
             valid_accuracy = 1.0 * valid_accuracy / dataloader.n_valid
             valid_loss = 1.0 * valid_loss / dataloader.n_valid
             
-            print('epoch[%d], iter[%d], data time: %.2fs, train time: %.2fs' % (
-                epoch, iteration, data_span, train_span))
+            #print('epoch[%d], iter[%d], data time: %.2fs, train time: %.2fs' % (epoch, iteration, data_span, train_span))
             print('epoch[%d], iter[%d], train loss: %.6f, train precision: %.6f, '
-                'valid loss: %.6f, valid precision: %.6f\n' % (
+                'valid loss: %.6f, valid precision: %.6f' % (
                 epoch, iteration, train_loss, train_accuracy, valid_loss, valid_accuracy))
             
             # 保存模型
